@@ -7,10 +7,10 @@ import {
   Modal,
   TouchableOpacity,
 } from 'react-native';
-import axios from 'axios';
 import Pinchable from 'react-native-pinchable';
 
 import Loading from '../components/Loading';
+import {imageApi} from '../misc/ImageApi';
 
 function FullPin({route}) {
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -21,8 +21,8 @@ function FullPin({route}) {
 
   const fetchImage = () => {
     setIsLoading(true);
-    axios
-      .get(`https://api.slingacademy.com/v1/sample-data/photos/${id}`)
+    imageApi
+      .getCurrentImage(id)
       .then(({data}) => {
         setFullImage(data.photo);
       })

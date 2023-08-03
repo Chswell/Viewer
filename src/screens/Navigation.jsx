@@ -3,29 +3,53 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
 import {Image, TextInput, TouchableOpacity, View} from 'react-native';
 import {observer} from 'mobx-react-lite';
+import SelectDropdown from 'react-native-select-dropdown';
 
 import PinList from './PinList';
 import FullPin from './FullPin';
+import LogoTitle from '../components/LogoTitle';
+
 import NumColStore from '../store/numColStore';
 import SearchTextStore from '../store/searchTextStore';
+import LimitImageStore from '../store/limitImageStore';
 
 const Stack = createNativeStackNavigator();
 
-export const Navigation = observer(() => {
+export const Navigation = observer(({navigation}) => {
   const [text, setText] = React.useState('');
   const {numColumn} = NumColStore;
-
+  const optionsLimitImage = [10, 30, 50, 100];
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          headerBackTitleVisible: false,
+          headerShadowVisible: false,
+          headerBackVisible: false,
+        }}>
         <Stack.Screen
           name="PinList"
           component={PinList}
           options={{
-            headerTitle: `Главная`,
+            headerTitle: props => <LogoTitle {...props} />,
             headerRight: () => (
               <View
-                style={{flexDirection: 'row', alignItems: 'center', gap: 40}}>
+                style={{flexDirection: 'row', alignItems: 'center', gap: 35}}>
+                <SelectDropdown
+                  buttonStyle={{width: 160, borderRadius: 20}}
+                  buttonTextStyle={{fontSize: 15}}
+                  defaultButtonText={'Кол-во элементов'}
+                  data={optionsLimitImage}
+                  onSelect={(selectedItem, index) => {
+                    LimitImageStore.setLimitImage(selectedItem);
+                  }}
+                  buttonTextAfterSelection={(selectedItem, index) => {
+                    return selectedItem;
+                  }}
+                  rowTextForSelection={(item, index) => {
+                    return item;
+                  }}
+                />
                 <View>
                   <TextInput
                     style={{
@@ -46,8 +70,8 @@ export const Navigation = observer(() => {
                   <Image
                     source={
                       numColumn
-                        ? require(`../../public/img/card.png`)
-                        : require(`../../public/img/dashboard.png`)
+                        ? require(`../../public/img/dashboard.png`)
+                        : require(`../../public/img/card.png`)
                     }
                     style={{height: 35, width: 35}}
                   />
@@ -59,7 +83,9 @@ export const Navigation = observer(() => {
         <Stack.Screen
           name="FullPin"
           component={FullPin}
-          options={{title: 'Подробнее'}}
+          options={{
+            headerTitle: props => <LogoTitle {...props} />,
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>

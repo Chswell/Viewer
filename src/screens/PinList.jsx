@@ -6,24 +6,28 @@ import {
   FlatList,
   RefreshControl,
   TouchableOpacity,
+  Text,
 } from 'react-native';
-import axios from 'axios';
 import {observer} from 'mobx-react-lite';
 
 import Loading from '../components/Loading';
+import {imageApi} from '../misc/ImageApi';
+
 import NumColStore from '../store/numColStore';
 import SearchTextStore from '../store/searchTextStore';
+import LimitImageStore from '../store/limitImageStore';
 
 const PinList = observer(({navigation}) => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [listImage, setListImage] = React.useState([]);
   const [numColumn, setNumColumn] = React.useState(1);
   const {searchText} = SearchTextStore;
+  const {limitImage} = LimitImageStore;
 
   const fetchImages = () => {
     setIsLoading(true);
-    axios
-      .get('https://api.slingacademy.com/v1/sample-data/photos')
+    imageApi
+      .getListImages(limitImage)
       .then(response => {
         NumColStore.numColumn ? setNumColumn(1) : setNumColumn(2);
         if (searchText) {
@@ -47,6 +51,12 @@ const PinList = observer(({navigation}) => {
       });
   };
 
+  React.useEffect(fetchImages, [
+    NumColStore.numColumn,
+    SearchTextStore.searchText,
+    limitImage,
+  ]);
+
   const ItemView = ({item}) => {
     return (
       <TouchableOpacity
@@ -62,25 +72,24 @@ const PinList = observer(({navigation}) => {
     );
   };
 
-  React.useEffect(fetchImages, [
-    NumColStore.numColumn,
-    SearchTextStore.searchText,
-  ]);
-
   if (isLoading) {
     return <Loading />;
   }
 
   return (
     <View style={styles.imgContainer}>
-      <FlatList
-        numColumns={numColumn}
-        refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={fetchImages} />
-        }
-        data={listImage}
-        renderItem={ItemView}
-      />
+      {listImage.length > 0 && listImage ? (
+        <FlatList
+          numColumns={numColumn}
+          refreshControl={
+            <RefreshControl refreshing={isLoading} onRefresh={fetchImages} />
+          }
+          data={listImage}
+          renderItem={ItemView}
+        />
+      ) : (
+        <Text style={styles.emptyList}>Ничего не найдено</Text>
+      )}
     </View>
   );
 });
@@ -89,15 +98,12 @@ const styles = StyleSheet.create({
   imgContainer: {
     flex: 1,
     flexDirection: 'row',
-    paddingTop: 15,
   },
   pinOneColumn: {
     width: null,
     height: 400,
     borderRadius: 10,
-    marginBottom: 10,
-    marginLeft: 10,
-    marginRight: 10,
+    margin: 10,
   },
   pinDoubleColumn: {
     flexWrap: 'wrap',
@@ -105,9 +111,15 @@ const styles = StyleSheet.create({
     width: null,
     height: 300,
     borderRadius: 10,
-    marginBottom: 10,
-    marginLeft: 10,
-    marginRight: 10,
+    margin: 10,
+  },
+  emptyList: {
+    fontSize: 40,
+    flex: 1,
+    width: 200,
+    height: 200,
+    alignSelf: 'center',
+    textAlign: 'center',
   },
 });
 
