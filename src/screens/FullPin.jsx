@@ -34,7 +34,7 @@ function FullPin({route}) {
       });
   };
 
-  React.useEffect(fetchImage, []);
+  React.useEffect(fetchImage, [id]);
 
   if (isLoading) {
     return <Loading />;

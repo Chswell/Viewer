@@ -13,7 +13,7 @@ import {observer} from 'mobx-react-lite';
 import Loading from '../components/Loading';
 import {imageApi} from '../misc/ImageApi';
 
-import NumColStore from '../store/numColStore';
+import ToggleColStore from '../store/toggleColStore';
 import SearchTextStore from '../store/searchTextStore';
 import LimitImageStore from '../store/limitImageStore';
 
@@ -23,13 +23,13 @@ const PinList = observer(({navigation}) => {
   const [numColumn, setNumColumn] = React.useState(1);
   const {searchText} = SearchTextStore;
   const {limitImage} = LimitImageStore;
-
+  const {toggleColStore} = ToggleColStore;
   const fetchImages = () => {
     setIsLoading(true);
     imageApi
       .getListImages(limitImage)
       .then(response => {
-        NumColStore.numColumn ? setNumColumn(1) : setNumColumn(2);
+        ToggleColStore.toggleColumn ? setNumColumn(1) : setNumColumn(2);
         if (searchText) {
           const newData = response.data.photos.filter(function (item) {
             const itemData = item.description
@@ -51,11 +51,7 @@ const PinList = observer(({navigation}) => {
       });
   };
 
-  React.useEffect(fetchImages, [
-    NumColStore.numColumn,
-    SearchTextStore.searchText,
-    limitImage,
-  ]);
+  React.useEffect(fetchImages, [toggleColStore, searchText, limitImage]);
 
   const ItemView = ({item}) => {
     return (

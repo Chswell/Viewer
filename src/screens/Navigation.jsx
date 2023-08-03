@@ -9,13 +9,13 @@ import PinList from './PinList';
 import FullPin from './FullPin';
 import LogoTitle from '../components/LogoTitle';
 
-import NumColStore from '../store/numColStore';
+import NumColStore from '../store/toggleColStore';
 import SearchTextStore from '../store/searchTextStore';
 import LimitImageStore from '../store/limitImageStore';
 
 const Stack = createNativeStackNavigator();
 
-export const Navigation = observer(({navigation}) => {
+export const Navigation = observer(() => {
   const [text, setText] = React.useState('');
   const {numColumn} = NumColStore;
   const optionsLimitImage = [10, 30, 50, 100];
@@ -40,13 +40,13 @@ export const Navigation = observer(({navigation}) => {
                   buttonTextStyle={{fontSize: 15}}
                   defaultButtonText={'Кол-во элементов'}
                   data={optionsLimitImage}
-                  onSelect={(selectedItem, index) => {
+                  onSelect={selectedItem => {
                     LimitImageStore.setLimitImage(selectedItem);
                   }}
-                  buttonTextAfterSelection={(selectedItem, index) => {
+                  buttonTextAfterSelection={selectedItem => {
                     return selectedItem;
                   }}
-                  rowTextForSelection={(item, index) => {
+                  rowTextForSelection={item => {
                     return item;
                   }}
                 />
@@ -70,8 +70,8 @@ export const Navigation = observer(({navigation}) => {
                   <Image
                     source={
                       numColumn
-                        ? require(`../../public/img/dashboard.png`)
-                        : require(`../../public/img/card.png`)
+                        ? require('../../public/img/dashboard.png')
+                        : require('../../public/img/card.png')
                     }
                     style={{height: 35, width: 35}}
                   />
