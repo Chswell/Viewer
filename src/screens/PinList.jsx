@@ -18,10 +18,9 @@ import counter from '../store/counter';
 
 const PinList = observer(({navigation}) => {
   const [isLoading, setIsLoading] = React.useState(true);
+  const [filteredListImage, setFilteredListImage] = React.useState([]);
   const [listImage, setListImage] = React.useState([]);
-  const [errorImage, setErrorImage] = React.useState([]);
   const [numColumn, setNumColumn] = React.useState(1);
-
   const fetchImages = () => {
     setIsLoading(true);
     axios
@@ -44,6 +43,21 @@ const PinList = observer(({navigation}) => {
     return <Loading />;
   }
 
+  const ItemView = ({item}) => {
+    return (
+      <TouchableOpacity
+        onPress={() => navigation.navigate('FullPin', {id: item.id})}
+        style={{
+          flex: 1,
+        }}>
+        <Image
+          source={{uri: item.url, cache: 'only-if-cached'}}
+          style={styles.pinOneColumn}
+        />
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <View style={styles.imgContainer}>
       <FlatList
@@ -52,15 +66,7 @@ const PinList = observer(({navigation}) => {
           <RefreshControl refreshing={isLoading} onRefresh={fetchImages} />
         }
         data={listImage}
-        renderItem={({item}) => (
-          <TouchableOpacity
-            onPress={() => navigation.navigate('FullPin', {id: item.id})}
-            style={{
-              flex: 1,
-            }}>
-            <Image source={{uri: item.url}} style={styles.pinOneColumn} />
-          </TouchableOpacity>
-        )}
+        renderItem={ItemView}
       />
     </View>
   );
