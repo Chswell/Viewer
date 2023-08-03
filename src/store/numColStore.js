@@ -1,6 +1,6 @@
 import {makeAutoObservable} from 'mobx';
 
-class Counter {
+class NumColStore {
   numColumn = false;
   constructor() {
     makeAutoObservable(this);
@@ -11,4 +11,4 @@ class Counter {
   }
 }
 
-export default new Counter();
+export default new NumColStore();

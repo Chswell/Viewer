@@ -1,36 +1,23 @@
 import React from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
   Image,
   Text,
   View,
-  FlatList,
   Modal,
   TouchableOpacity,
-  Button,
-  Alert,
-  Switch,
 } from 'react-native';
 import axios from 'axios';
-import Loading from '../components/Loading';
-import {Dimensions} from 'react-native';
 import Pinchable from 'react-native-pinchable';
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height / 1.5;
+import Loading from '../components/Loading';
 
 function FullPin({route}) {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
   const [fullImage, setFullImage] = React.useState('');
-  const [errorImage, setErrorImage] = React.useState();
 
   const {id} = route.params;
-  const [isEnabled, setIsEnabled] = React.useState(false);
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
   const fetchImage = () => {
     setIsLoading(true);
@@ -40,7 +27,7 @@ function FullPin({route}) {
         setFullImage(data.photo);
       })
       .catch(error => {
-        setErrorImage(error);
+        alert(error);
       })
       .finally(() => {
         setIsLoading(false);

@@ -1,33 +1,43 @@
 import React from 'react';
 import {
-  SafeAreaView,
-  StatusBar,
   StyleSheet,
   Image,
-  Text,
   View,
   FlatList,
   RefreshControl,
   TouchableOpacity,
 } from 'react-native';
 import axios from 'axios';
-import FullPin from './FullPin';
-import Loading from '../components/Loading';
 import {observer} from 'mobx-react-lite';
-import counter from '../store/counter';
+
+import Loading from '../components/Loading';
+import NumColStore from '../store/numColStore';
+import SearchTextStore from '../store/searchTextStore';
 
 const PinList = observer(({navigation}) => {
   const [isLoading, setIsLoading] = React.useState(true);
-  const [filteredListImage, setFilteredListImage] = React.useState([]);
   const [listImage, setListImage] = React.useState([]);
   const [numColumn, setNumColumn] = React.useState(1);
+  const {searchText} = SearchTextStore;
+
   const fetchImages = () => {
     setIsLoading(true);
     axios
       .get('https://api.slingacademy.com/v1/sample-data/photos')
       .then(response => {
-        setListImage(response.data.photos);
-        counter.numColumn ? setNumColumn(1) : setNumColumn(2);
+        NumColStore.numColumn ? setNumColumn(1) : setNumColumn(2);
+        if (searchText) {
+          const newData = response.data.photos.filter(function (item) {
+            const itemData = item.description
+              ? item.description.toUpperCase()
+              : ''.toUpperCase();
+            const textData = searchText.toUpperCase();
+            return itemData.indexOf(textData) > -1;
+          });
+          setListImage(newData);
+        } else {
+          setListImage(response.data.photos);
+        }
       })
       .catch(error => {
         alert(error);
@@ -36,12 +46,6 @@ const PinList = observer(({navigation}) => {
         setIsLoading(false);
       });
   };
-
-  React.useEffect(fetchImages, [counter.numColumn]);
-
-  if (isLoading) {
-    return <Loading />;
-  }
 
   const ItemView = ({item}) => {
     return (
@@ -57,6 +61,15 @@ const PinList = observer(({navigation}) => {
       </TouchableOpacity>
     );
   };
+
+  React.useEffect(fetchImages, [
+    NumColStore.numColumn,
+    SearchTextStore.searchText,
+  ]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <View style={styles.imgContainer}>
@@ -76,6 +89,7 @@ const styles = StyleSheet.create({
   imgContainer: {
     flex: 1,
     flexDirection: 'row',
+    paddingTop: 15,
   },
   pinOneColumn: {
     width: null,

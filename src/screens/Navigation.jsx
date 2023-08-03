@@ -1,18 +1,19 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
-import {Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Image, TextInput, TouchableOpacity, View} from 'react-native';
+import {observer} from 'mobx-react-lite';
+
 import PinList from './PinList';
 import FullPin from './FullPin';
-import counter from '../store/counter';
-import {Button} from 'react-native';
-import {observer} from 'mobx-react-lite';
+import NumColStore from '../store/numColStore';
+import SearchTextStore from '../store/searchTextStore';
 
 const Stack = createNativeStackNavigator();
 
 export const Navigation = observer(() => {
-  const [text, onChangeText] = React.useState('');
-  const {numColumn} = counter;
+  const [text, setText] = React.useState('');
+  const {numColumn} = NumColStore;
 
   return (
     <NavigationContainer>
@@ -33,15 +34,15 @@ export const Navigation = observer(() => {
                       borderBottomColor: 'gray',
                       borderBottomWidth: 1,
                     }}
-                    onEndEditing={() => alert(text)}
-                    onChangeText={onChangeText}
+                    onEndEditing={() => SearchTextStore.setSearchText(text)}
+                    onChangeText={setText}
                     value={text}
                     placeholder="Поиск"
                   />
                 </View>
                 <TouchableOpacity
                   style={{height: 35, width: 35}}
-                  onPress={() => counter.setNumColumn()}>
+                  onPress={() => NumColStore.setNumColumn()}>
                   <Image
                     source={
                       numColumn
