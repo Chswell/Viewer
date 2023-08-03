@@ -1,7 +1,13 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
-import {Image, TextInput, TouchableOpacity, View} from 'react-native';
+import {
+  Dimensions,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {observer} from 'mobx-react-lite';
 import SelectDropdown from 'react-native-select-dropdown';
 
@@ -9,15 +15,15 @@ import PinList from './PinList';
 import FullPin from './FullPin';
 import LogoTitle from '../components/LogoTitle';
 
-import NumColStore from '../store/toggleColStore';
 import SearchTextStore from '../store/searchTextStore';
 import LimitImageStore from '../store/limitImageStore';
+import ToggleColStore from '../store/toggleColStore';
 
 const Stack = createNativeStackNavigator();
 
 export const Navigation = observer(() => {
   const [text, setText] = React.useState('');
-  const {numColumn} = NumColStore;
+  const {toggleColumn} = ToggleColStore;
   const optionsLimitImage = [10, 30, 50, 100];
   return (
     <NavigationContainer>
@@ -35,21 +41,23 @@ export const Navigation = observer(() => {
             headerRight: () => (
               <View
                 style={{flexDirection: 'row', alignItems: 'center', gap: 35}}>
-                <SelectDropdown
-                  buttonStyle={{width: 160, borderRadius: 20}}
-                  buttonTextStyle={{fontSize: 15}}
-                  defaultButtonText={'Кол-во элементов'}
-                  data={optionsLimitImage}
-                  onSelect={selectedItem => {
-                    LimitImageStore.setLimitImage(selectedItem);
-                  }}
-                  buttonTextAfterSelection={selectedItem => {
-                    return selectedItem;
-                  }}
-                  rowTextForSelection={item => {
-                    return item;
-                  }}
-                />
+                {Dimensions.get('window').width > 400 && (
+                  <SelectDropdown
+                    buttonStyle={{width: 160, borderRadius: 20}}
+                    buttonTextStyle={{fontSize: 15}}
+                    defaultButtonText={'Кол-во элементов'}
+                    data={optionsLimitImage}
+                    onSelect={selectedItem => {
+                      LimitImageStore.setLimitImage(selectedItem);
+                    }}
+                    buttonTextAfterSelection={selectedItem => {
+                      return selectedItem;
+                    }}
+                    rowTextForSelection={item => {
+                      return item;
+                    }}
+                  />
+                )}
                 <View>
                   <TextInput
                     style={{
@@ -66,10 +74,12 @@ export const Navigation = observer(() => {
                 </View>
                 <TouchableOpacity
                   style={{height: 35, width: 35}}
-                  onPress={() => NumColStore.setNumColumn()}>
+                  onPress={() => {
+                    ToggleColStore.setToggleColumn();
+                  }}>
                   <Image
                     source={
-                      numColumn
+                      toggleColumn
                         ? require('../../public/img/dashboard.png')
                         : require('../../public/img/card.png')
                     }

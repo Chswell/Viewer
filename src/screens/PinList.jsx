@@ -7,6 +7,8 @@ import {
   RefreshControl,
   TouchableOpacity,
   Text,
+  Button,
+  Dimensions,
 } from 'react-native';
 import {observer} from 'mobx-react-lite';
 
@@ -23,7 +25,7 @@ const PinList = observer(({navigation}) => {
   const [numColumn, setNumColumn] = React.useState(1);
   const {searchText} = SearchTextStore;
   const {limitImage} = LimitImageStore;
-  const {toggleColStore} = ToggleColStore;
+  const {toggleColumn} = ToggleColStore;
   const fetchImages = () => {
     setIsLoading(true);
     imageApi
@@ -51,7 +53,12 @@ const PinList = observer(({navigation}) => {
       });
   };
 
-  React.useEffect(fetchImages, [toggleColStore, searchText, limitImage]);
+  React.useEffect(fetchImages, [
+    toggleColumn,
+    searchText,
+    limitImage,
+    numColumn,
+  ]);
 
   const ItemView = ({item}) => {
     return (
@@ -97,7 +104,7 @@ const styles = StyleSheet.create({
   },
   pinOneColumn: {
     width: null,
-    height: 400,
+    height: Dimensions.get('window').width > 590 ? 400 : 250,
     borderRadius: 10,
     margin: 10,
   },
@@ -105,7 +112,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     flexDirection: 'row',
     width: null,
-    height: 300,
+    height: Dimensions.get('window').width > 590 ? 400 : 200,
     borderRadius: 10,
     margin: 10,
   },
