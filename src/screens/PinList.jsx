@@ -13,11 +13,14 @@ import {
 import axios from 'axios';
 import FullPin from './FullPin';
 import Loading from '../components/Loading';
+import {observer} from 'mobx-react-lite';
+import counter from '../store/counter';
 
-function PinList({navigation}) {
+const PinList = observer(({navigation}) => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [listImage, setListImage] = React.useState([]);
   const [errorImage, setErrorImage] = React.useState([]);
+  const [numColumn, setNumColumn] = React.useState(1);
 
   const fetchImages = () => {
     setIsLoading(true);
@@ -25,49 +28,62 @@ function PinList({navigation}) {
       .get('https://api.slingacademy.com/v1/sample-data/photos')
       .then(response => {
         setListImage(response.data.photos);
+        counter.numColumn ? setNumColumn(1) : setNumColumn(2);
       })
       .catch(error => {
-        setErrorImage(error);
+        alert(error);
       })
       .finally(() => {
         setIsLoading(false);
       });
   };
 
-  React.useEffect(fetchImages, []);
+  React.useEffect(fetchImages, [counter.numColumn]);
 
   if (isLoading) {
     return <Loading />;
   }
-  return (
-    <>
-      <SafeAreaView style={{padding: 0, margin: 0}}>
-        <StatusBar />
 
-        <Text>{errorImage}</Text>
-        <FlatList
-          refreshControl={
-            <RefreshControl refreshing={isLoading} onRefresh={fetchImages} />
-          }
-          data={listImage}
-          renderItem={({item}) => (
-            <View>
-              <TouchableOpacity
-                onPress={() => navigation.navigate('FullPin', {id: item.id})}>
-                <Image source={{uri: item.url}} style={styles.pin} />
-              </TouchableOpacity>
-            </View>
-          )}
-        />
-      </SafeAreaView>
-    </>
+  return (
+    <View style={styles.imgContainer}>
+      <FlatList
+        numColumns={numColumn}
+        refreshControl={
+          <RefreshControl refreshing={isLoading} onRefresh={fetchImages} />
+        }
+        data={listImage}
+        renderItem={({item}) => (
+          <TouchableOpacity
+            onPress={() => navigation.navigate('FullPin', {id: item.id})}
+            style={{
+              flex: 1,
+            }}>
+            <Image source={{uri: item.url}} style={styles.pinOneColumn} />
+          </TouchableOpacity>
+        )}
+      />
+    </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
-  pin: {
+  imgContainer: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  pinOneColumn: {
     width: null,
     height: 400,
+    borderRadius: 10,
+    marginBottom: 10,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  pinDoubleColumn: {
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    width: null,
+    height: 300,
     borderRadius: 10,
     marginBottom: 10,
     marginLeft: 10,

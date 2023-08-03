@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   Button,
   Alert,
+  Switch,
 } from 'react-native';
 import axios from 'axios';
 import Loading from '../components/Loading';
@@ -28,6 +29,8 @@ function FullPin({route}) {
   const [errorImage, setErrorImage] = React.useState();
 
   const {id} = route.params;
+  const [isEnabled, setIsEnabled] = React.useState(false);
+  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
   const fetchImage = () => {
     setIsLoading(true);
@@ -64,27 +67,36 @@ function FullPin({route}) {
       <View style={styles.infoImage}>
         <Text style={styles.titleImage}>{fullImage.title}</Text>
       </View>
-      <Modal visible={modalVisible} transparent={true}>
-        <View style={{flex: 1}}>
-          <View
-            style={{width: '100%', height: '100%', backgroundColor: '#000'}}>
-            <TouchableOpacity
-              style={{marginTop: 15, marginLeft: 15}}
-              onPress={() => setModalVisible(!modalVisible)}>
-              <Image
-                source={require('../../public/img/close.png')}
-                style={{height: 40, width: 40}}
-              />
-            </TouchableOpacity>
-            <Pinchable>
-              <Image
-                source={{uri: fullImage.url}}
-                style={{height: '100%', width: '100%'}}
-                accessibilityLabel={'fullImage'}
-                resizeMode={'contain'}
-              />
-            </Pinchable>
-          </View>
+      <Modal
+        visible={modalVisible}
+        transparent={false}
+        onRequestClose={() => setModalVisible(!modalVisible)}
+        statusBarTranslucent={true}
+        animationType={'fade'}>
+        <View style={{width: '100%', height: '100%', backgroundColor: '#000'}}>
+          <TouchableOpacity
+            style={{
+              marginTop: 35,
+              marginLeft: 15,
+              width: 40,
+            }}
+            onPress={() => setModalVisible(!modalVisible)}>
+            <Image
+              source={require('../../public/img/close.png')}
+              style={{
+                height: 40,
+                width: 40,
+              }}
+            />
+          </TouchableOpacity>
+          <Pinchable>
+            <Image
+              source={{uri: fullImage.url}}
+              style={{height: '100%', width: '100%'}}
+              accessibilityLabel={'fullImage'}
+              resizeMode={'contain'}
+            />
+          </Pinchable>
         </View>
       </Modal>
     </View>
