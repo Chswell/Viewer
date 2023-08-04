@@ -15,15 +15,17 @@ import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import RNFetchBlob from 'rn-fetch-blob';
 
 import Loading from '../components/Loading';
-import {imageApi} from '../misc/ImageApi';
 import SaveLoader from '../components/SaveLoader';
+import {imageApi} from '../misc/ImageApi';
 import {usersApi} from '../misc/usersApi';
+import ThemeStore from '../store/themeStore';
+import darkMode from '../styles/darkMode';
 
-function FullPin({route}) {
+const FullPin = ({route}) => {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
   const [isLoadingImage, setIsLoadingImage] = React.useState(false);
-  const [fullImage, setFullImage] = React.useState('');
+  const [fullImage, setFullImage] = React.useState({});
   const [userInfo, setUserInfo] = React.useState({});
 
   const {id} = route.params;
@@ -36,7 +38,7 @@ function FullPin({route}) {
         title: 'Пример отправки ссылки на фотографию',
       });
     } catch (error) {
-      Alert.alert(error.message);
+      alert(error.message);
     }
   };
 
@@ -65,7 +67,7 @@ function FullPin({route}) {
 
   React.useEffect(() => {
     fetchInfoImage();
-  }, [id]);
+  }, [id, ThemeStore.theme]);
 
   const checkAndroidPermission = async () => {
     const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
@@ -104,13 +106,20 @@ function FullPin({route}) {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.infoImage}>
+      <View
+        style={
+          ThemeStore.theme === 'light' ? styles.infoImage : darkMode.infoImage
+        }>
         <View style={styles.buttonsPanel}>
           <TouchableOpacity
             style={styles.buttonItem}
             onPress={() => saveImageInDevice(fullImage.url)}>
             <Image
-              source={require('../../public/img/download.png')}
+              source={
+                ThemeStore.theme === 'light'
+                  ? require('../../public/img/download.png')
+                  : require('../../public/img/downloadLight.png')
+              }
               alt={'download'}
               style={{
                 height: 40,
@@ -121,7 +130,11 @@ function FullPin({route}) {
 
           <TouchableOpacity style={styles.buttonItem} onPress={onShare}>
             <Image
-              source={require('../../public/img/share.png')}
+              source={
+                ThemeStore.theme === 'light'
+                  ? require('../../public/img/share.png')
+                  : require('../../public/img/shareLight.png')
+              }
               alt={'share'}
               style={{
                 height: 40,
@@ -134,7 +147,10 @@ function FullPin({route}) {
         {userInfo && (
           <View style={styles.userInfoPanel}>
             <View style={styles.userMainInfo}>
-              <View style={styles.avatar}>
+              <View
+                style={
+                  ThemeStore.theme === 'light' ? styles.avatar : darkMode.avatar
+                }>
                 <Text style={styles.initials}>
                   {userInfo.first_name && userInfo.first_name[0]}
                   {userInfo.first_name && userInfo.last_name[0]}
@@ -154,7 +170,11 @@ function FullPin({route}) {
 
             <View style={styles.country}>
               <Image
-                source={require('../../public/img/location.png')}
+                source={
+                  ThemeStore.theme === 'light'
+                    ? require('../../public/img/location.png')
+                    : require('../../public/img/locationLight.png')
+                }
                 alt={'share'}
                 style={{
                   height: 20,
@@ -177,21 +197,9 @@ function FullPin({route}) {
         onRequestClose={() => setModalVisible(!modalVisible)}
         statusBarTranslucent={true}
         animationType={'fade'}>
-        <View
-          style={{
-            width: '100%',
-            height: '100%',
-            backgroundColor: '#000',
-            position: 'relative',
-          }}>
+        <View style={styles.contentModal}>
           <TouchableOpacity
-            style={{
-              width: 40,
-              position: 'absolute',
-              zIndex: 1,
-              top: 40,
-              left: 20,
-            }}
+            style={styles.touchableClose}
             onPress={() => setModalVisible(!modalVisible)}>
             <Image
               source={require('../../public/img/close.png')}
@@ -216,7 +224,7 @@ function FullPin({route}) {
       </Modal>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   pin: {
@@ -281,6 +289,19 @@ const styles = StyleSheet.create({
   },
   titleImage: {
     fontSize: 20,
+  },
+  touchableClose: {
+    width: 40,
+    position: 'absolute',
+    zIndex: 1,
+    top: 40,
+    left: 20,
+  },
+  contentModal: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#000',
+    position: 'relative',
   },
 });
 

@@ -1,6 +1,8 @@
 import React from 'react';
-import {Image, TouchableOpacity} from 'react-native';
+import {Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import ThemeStore from '../store/themeStore';
+import darkMode from '../styles/darkMode';
 
 const LogoTitle = () => {
   const navigation = useNavigation();
@@ -11,7 +13,11 @@ const LogoTitle = () => {
       <Image
         style={{height: 55, width: 120}}
         resizeMode="cover"
-        source={require('../../public/img/logo.png')}
+        source={
+          ThemeStore.theme === 'light'
+            ? require('../../public/img/logo.png')
+            : require('../../public/img/logoLight.png')
+        }
         alt={'Viewer'}
       />
     </TouchableOpacity>

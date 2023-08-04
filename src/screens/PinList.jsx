@@ -7,8 +7,8 @@ import {
   RefreshControl,
   TouchableOpacity,
   Text,
-  Button,
   Dimensions,
+  Button,
 } from 'react-native';
 import {observer} from 'mobx-react-lite';
 
@@ -18,14 +18,18 @@ import {imageApi} from '../misc/ImageApi';
 import ToggleColStore from '../store/toggleColStore';
 import SearchTextStore from '../store/searchTextStore';
 import LimitImageStore from '../store/limitImageStore';
+import ThemeStore from '../store/themeStore';
+import darkMode from '../styles/darkMode';
 
 const PinList = observer(({navigation}) => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [listImage, setListImage] = React.useState([]);
   const [numColumn, setNumColumn] = React.useState(1);
+
   const {searchText} = SearchTextStore;
   const {limitImage} = LimitImageStore;
   const {toggleColumn} = ToggleColStore;
+
   const fetchImages = () => {
     setIsLoading(true);
     imageApi
@@ -80,7 +84,12 @@ const PinList = observer(({navigation}) => {
   }
 
   return (
-    <View style={styles.imgContainer}>
+    <View
+      style={
+        ThemeStore.theme === 'light'
+          ? styles.imgContainer
+          : darkMode.imgContainer
+      }>
       {listImage.length > 0 && listImage ? (
         <FlatList
           numColumns={numColumn}

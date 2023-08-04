@@ -1,6 +1,4 @@
 import React from 'react';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {NavigationContainer} from '@react-navigation/native';
 import {
   Dimensions,
   Image,
@@ -10,6 +8,8 @@ import {
 } from 'react-native';
 import {observer} from 'mobx-react-lite';
 import SelectDropdown from 'react-native-select-dropdown';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import PinList from './PinList';
 import FullPin from './FullPin';
@@ -18,6 +18,7 @@ import LogoTitle from '../components/LogoTitle';
 import SearchTextStore from '../store/searchTextStore';
 import LimitImageStore from '../store/limitImageStore';
 import ToggleColStore from '../store/toggleColStore';
+import ThemeStore from '../store/themeStore';
 
 const Stack = createNativeStackNavigator();
 
@@ -32,6 +33,13 @@ export const Navigation = observer(() => {
           headerBackTitleVisible: false,
           headerShadowVisible: false,
           headerBackVisible: false,
+          headerTintColor: ThemeStore.theme === 'light' ? '#f0f1fa' : '#18191a',
+          statusBarColor: ThemeStore.theme === 'light' ? '#a9abbe' : '#18191a',
+          navigationBarColor:
+            ThemeStore.theme === 'light' ? '#f0f1fa' : '#18191a',
+          headerStyle: {
+            backgroundColor: ThemeStore.theme === 'light' ? '#fff' : '#18191a',
+          },
         }}>
         <Stack.Screen
           name="PinList"
@@ -80,8 +88,12 @@ export const Navigation = observer(() => {
                   <Image
                     source={
                       toggleColumn
-                        ? require('../../public/img/dashboard.png')
-                        : require('../../public/img/card.png')
+                        ? ThemeStore.theme === 'light'
+                          ? require('../../public/img/dashboard.png')
+                          : require('../../public/img/dashboardLight.png')
+                        : ThemeStore.theme === 'light'
+                        ? require('../../public/img/card.png')
+                        : require('../../public/img/cardLight.png')
                     }
                     style={{height: 35, width: 35}}
                   />
