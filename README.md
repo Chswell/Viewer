@@ -11,7 +11,7 @@
   - Android SDK Platform 33
   - Google APIs Intel x86 Atom System Image
 
-## Install Dependencies
+## Установка зависимостей
 
 ```bash
 # using npm
@@ -43,7 +43,7 @@ npm start
 yarn start
 ```
 
-## Step 2: Запуск приложения
+## Запуск приложения
 
 ### Для андроид
 
