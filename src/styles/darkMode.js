@@ -106,8 +106,25 @@ const darkMode = StyleSheet.create({
     backgroundColor: '#000',
     position: 'relative',
   },
+
   contentLoader: {
     backgroundColor: '#242526',
+  },
+  // SaveLoader
+  positionLoader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+  },
+  viewLoader: {
+    backgroundColor: 'rgb(14,13,13)',
+    borderRadius: 10,
+    padding: 10,
   },
 });
 
