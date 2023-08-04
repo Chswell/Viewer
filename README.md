@@ -1,4 +1,4 @@
-# Разработка
+# Viewer
 
 ## Требования
 
@@ -31,8 +31,6 @@ yarn install
 | [rn-fetch-blob](https://www.npmjs.com/package/rn-fetch-blob)| 0.12.0 | Для загрузки изображения на устройство |
 | [react-native-camera-roll/camera-roll](https://www.npmjs.com/package/@react-native-camera-roll/camera-roll)| 5.7.2  | Для загрузки изображения на устройство |
 
-
-
 ## Запуск Metro Server
 
 ```bash
@@ -64,7 +62,6 @@ npm run ios
 # OR using Yarn
 yarn ios
 ```
-* [Server Requirements](#install-dependencies)
 
 ## Структура проекта
 ```
@@ -86,11 +83,3 @@ yarn ios
 |       ├── searchTextStore.js
 |       └── toggleColStore.js
 ```
-
-
-# Документация
-
-
-- [React Native Website](https://reactnative.dev)
-- [React Navigation Website](https://reactnavigation.org/)
-- [Mobx Website](https://mobx.js.org/README.html)
