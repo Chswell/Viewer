@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   Text,
   Dimensions,
-  Button,
 } from 'react-native';
 import {observer} from 'mobx-react-lite';
 

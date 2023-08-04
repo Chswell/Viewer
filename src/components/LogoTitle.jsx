@@ -1,8 +1,7 @@
 import React from 'react';
-import {Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {Image, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import ThemeStore from '../store/themeStore';
-import darkMode from '../styles/darkMode';
 
 const LogoTitle = () => {
   const navigation = useNavigation();
