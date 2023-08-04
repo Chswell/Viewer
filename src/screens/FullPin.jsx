@@ -261,6 +261,7 @@ const styles = StyleSheet.create({
   },
   avatar: {
     backgroundColor: '#f5f0f0',
+    height: Dimensions.get('window').width > 590 ? 70 : 45,
     width: Dimensions.get('window').width > 590 ? 70 : 45,
     borderRadius: 50,
     borderColor: '#6d7ee8',
